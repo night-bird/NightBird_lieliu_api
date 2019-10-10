@@ -1,11 +1,12 @@
 const md5 = require('md5')
 const moment = require('moment')
+const querystring = require('querystring')
 const request = require('./utils/request')
 const config = require('./config')
 
 class LieLiu {
   constructor () {
-    this.username = config.usernmae
+    this.username = config.username
   }
 
   async getSysTimestamp () {
@@ -14,10 +15,11 @@ class LieLiu {
     return resp.data.time || String(Date.now()).slice(0, 10)
   }
 
-  getSignKey (timestamp) {
+  getSignKey (url) {
     const signm = config.secret
-    const url = encodeURI(`/api/method?a=1&b=2&c=3&timestamp=${timestamp}&username=${this.username}&ver=5&signm=${signm}`)
-    return md5(url)
+    const uri = `${url}&${signm}`
+    const encodeUrl = querystring.escape(uri)
+    return md5(encodeUrl)
   }
 
   async addTask () {
@@ -32,7 +34,7 @@ class LieLiu {
     const goodsAttention = 30
     const goodsBrowsingTime = 30
     const hour = '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0'
-    const id = 1552287074314
+    const id = 1552287074315
     const keyword = ''
     const liveid = ''
     const page = '1-10'
@@ -56,6 +58,32 @@ class LieLiu {
                 `&shopVisit=${shopVisit}&shopVisitCount=${shopVisitCount}&shopVisitTime=${shopVisitTime}&target=${target}&targetid=${targetid}&type=${type}&userid=${userid}` +
                 `&username=${username}&ver=${ver}&signm=${signm}`
     return request.get(url)
+  }
+
+  async tbLikeTask () {
+    const path = '/ll/task_add'
+    const timestamp = Number(await this.getSysTimestamp())
+
+    const payload = {
+      begin_time: String(moment().format('YYYY-MM-DD')),
+      count: 50,
+      format: 'json',
+      hour: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0',
+      id: '20191010221003123456',
+      itemid: '1231',
+      type: 17,
+      timestamp,
+      username: this.username,
+      ver: 5
+    }
+    const url = `${path}?begin_time=${payload.begin_time}&count=${payload.count}&format=${payload.format}&hour=${payload.hour}` +
+                `&id=${payload.id}&itemid=${payload.itemid}&type=${payload.type}&timestamp=${payload.timestamp}&username=${payload.username}&ver=${payload.ver}`
+    const signkey = this.getSignKey(url)
+    const fullPath = `${url}&signkey=${signkey}`
+    const encodeFullPath = querystring.escape(fullPath)
+    console.log(fullPath)
+    console.log(encodeFullPath)
+    return request.get(encodeFullPath)
   }
 }
 
