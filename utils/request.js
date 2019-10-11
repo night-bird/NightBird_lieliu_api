@@ -1,9 +1,8 @@
 const axios = require('axios')
-
-const baseURL = 'http://api.lieliu.com:1024'
+const config = require('../config')
 
 const server = axios.create({
-  baseURL,
+  baseURL: config.baseURL,
   timeout: 15000
 })
 

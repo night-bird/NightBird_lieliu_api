@@ -19,45 +19,8 @@ class LieLiu {
     const signm = config.secret
     const uri = `${url}&${signm}`
     const encodeUrl = querystring.escape(uri)
+    console.log(encodeUrl)
     return md5(encodeUrl)
-  }
-
-  async addTask () {
-    const path = '/ll/task_add'
-    const timestamp = (await this.getSysTimestamp())
-
-    const username = this.username
-    const beginTime = String(moment().format('YYYY-MM-DD'))
-    const category = ''
-    const count = 100
-    const fav = 2160
-    const goodsAttention = 30
-    const goodsBrowsingTime = 30
-    const hour = '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0'
-    const id = 1552287074315
-    const keyword = ''
-    const liveid = ''
-    const page = '1-10'
-    const priceMax = 0
-    const priceMin = 0
-    const ri = 0
-    const sUrl = ''
-    const shop = ''
-    const shopVisit = ''
-    const shopVisitCount = 0
-    const shopVisitTime = 30
-    const target = 'https://detail.tmall.com/item.htm?spm=a21wu.241046-hk.9629632455.5.41cab6cboj1XEp&id=582913856495&scm=1007.22963.122686.0'
-    const targetid = ''
-    const type = 0
-    const userid = ''
-    const ver = 5
-    const signm = this.getSignKey(timestamp)
-
-    const url = `${path}/begin_time=${beginTime}&category=${category}&count=${count}&fav=${fav}&goodsAttention=${goodsAttention}&goodsBrowsingTime=${goodsBrowsingTime}` +
-                `&hour=${hour}&id=${id}&keyword=${keyword}&liveid=${liveid}&page=${page}&price_max=${priceMax}&price_min=${priceMin}&ri=${ri}&sUrl=${sUrl}&shop=${shop}` +
-                `&shopVisit=${shopVisit}&shopVisitCount=${shopVisitCount}&shopVisitTime=${shopVisitTime}&target=${target}&targetid=${targetid}&type=${type}&userid=${userid}` +
-                `&username=${username}&ver=${ver}&signm=${signm}`
-    return request.get(url)
   }
 
   async tbLikeTask () {
@@ -69,8 +32,8 @@ class LieLiu {
       count: 50,
       format: 'json',
       hour: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0',
-      id: '20191010221003123456',
-      itemid: '1231',
+      id: '20191010221003123459',
+      itemid: '123123123',
       type: 17,
       timestamp,
       username: this.username,
@@ -78,12 +41,14 @@ class LieLiu {
     }
     const url = `${path}?begin_time=${payload.begin_time}&count=${payload.count}&format=${payload.format}&hour=${payload.hour}` +
                 `&id=${payload.id}&itemid=${payload.itemid}&type=${payload.type}&timestamp=${payload.timestamp}&username=${payload.username}&ver=${payload.ver}`
+
+    // const urlV2 = `${path}?${querystring.stringify(payload)}`
     const signkey = this.getSignKey(url)
     const fullPath = `${url}&signkey=${signkey}`
     const encodeFullPath = querystring.escape(fullPath)
     console.log(fullPath)
     console.log(encodeFullPath)
-    return request.get(encodeFullPath)
+    // return request.get(encodeFullPath)
   }
 }
 
